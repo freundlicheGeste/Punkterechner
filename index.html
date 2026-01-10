@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punkte Rechner</title>
+    <title>Punkte-Rechner</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -200,7 +200,7 @@
 
     <div class="container">
         <div class="header">
-            <h2>Punkte Rechner</h2>
+            <h2>Punkterechner</h2>
             <div class="top-btns">
                 <button class="small-btn" onclick="exportFavs()" title="Export">📤</button>
                 <button class="small-btn" onclick="importFavs()" title="Import">📥</button>
@@ -248,6 +248,16 @@
         function toggleTheme() { localStorage.getItem('theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
         if (localStorage.getItem('theme') === 'dark') setTheme('dark');
 
+        // Reset beim Laden der Seite (behebt das Firefox-Problem)
+        window.onload = function () {
+            document.getElementById('name').value = '';
+            document.getElementById('kcal').value = '0';
+            document.getElementById('fett').value = '0';
+            document.getElementById('gramm').value = '100';
+            berechnen();
+            renderFavs();
+        };
+
         function berechnen() {
             const kcal = parseFloat(document.getElementById('kcal').value) || 0;
             const fett = parseFloat(document.getElementById('fett').value) || 0;
@@ -281,12 +291,30 @@
         }
 
         // Favoriten
+
+        // Prüffunktion für Duplikate (Name + Werte)
+        function isDuplicate(newFav, existingFavs) {
+            return existingFavs.some(f =>
+                f.name.toLowerCase() === newFav.name.toLowerCase() &&
+                f.pPortion === newFav.pPortion &&
+                f.p100 === newFav.p100
+            );
+        }
+
         function saveFavorite() {
             const name = document.getElementById('name').value || "Unbenannt";
             const pPortion = document.getElementById('resPortion').innerText.split(' ')[0];
             const p100 = document.getElementById('res100').innerText.split(' ')[0];
+
+            const newFav = { id: Date.now(), name, pPortion, p100 };
             let favs = JSON.parse(localStorage.getItem('favs')) || [];
-            favs.push({ id: Date.now(), name, pPortion, p100 });
+
+            if (isDuplicate(newFav, favs)) {
+                alert("Dieser Eintrag existiert bereits mit den gleichen Werten.");
+                return;
+            }
+
+            favs.push(newFav);
             localStorage.setItem('favs', JSON.stringify(favs));
             renderFavs();
             document.getElementById('name').value = '';
@@ -319,6 +347,7 @@
             a.click();
         }
 
+        // Import mit Duplikat-Check
         function importFavs() {
             const input = document.createElement("input");
             input.type = "file";
@@ -327,8 +356,26 @@
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 reader.onload = event => {
-                    localStorage.setItem('favs', event.target.result);
-                    renderFavs();
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        let currentFavs = JSON.parse(localStorage.getItem('favs')) || [];
+                        let addedCount = 0;
+
+                        importedData.forEach(newFav => {
+                            if (!isDuplicate(newFav, currentFavs)) {
+                                // Neue ID vergeben, um Konflikte zu vermeiden
+                                newFav.id = Date.now() + Math.random();
+                                currentFavs.push(newFav);
+                                addedCount++;
+                            }
+                        });
+
+                        localStorage.setItem('favs', JSON.stringify(currentFavs));
+                        renderFavs();
+                        alert(addedCount + " neue Favoriten importiert.");
+                    } catch (err) {
+                        alert("Fehler beim Importieren der Datei.");
+                    }
                 };
                 reader.readAsText(file);
             };
@@ -337,6 +384,7 @@
 
         renderFavs();
         berechnen();
+        // TODO, bei fav speicherung gespeicherte portionsmenge noch mit speichern
     </script>
 </body>
 
