@@ -160,13 +160,14 @@
 
         button:focus {
             outline: none;
-            border: 1px solid var(--focus-color);
+            /*border: 1px solid var(--focus-color);*/
         }
 
+        /*
         .btn-save:focus {
             box-shadow: 0 0 8px var(--accent-color);
         }
-
+*/
         .list-container {
             margin-top: 25px;
             width: 100%;
@@ -228,7 +229,7 @@
         <div class="input-group portion-group">
             <label>Portionsgröße (g):</label>
             <input type="number" id="gramm" value="100" oninput="berechnen()" onclick="this.select()"
-                enterkeyhint="done" onkeydown="tabOnEnter(event, 'btn-save')">
+                enterkeyhint="done" onkeydown="tabOnEnter(event, 'done')">
         </div>
 
         <div class="result-area">
@@ -260,13 +261,20 @@
         // ENTER: Springe zum nächsten Feld
         function tabOnEnter(event, nextId) {
             if (event.key === "Enter") {
-                event.preventDefault(); // Verhindert das Neuladen der Seite
-                const nextElement = document.getElementById(nextId);
-                if (nextElement) {
-                    nextElement.focus();
-                    // Falls es ein Input ist, direkt den Text markieren
-                    if (nextElement.tagName === 'INPUT' && nextElement.type !== 'text') {
-                        nextElement.select();
+                event.preventDefault(); // Verhindert Standard-Aktion
+
+                if (nextId === 'done') {
+                    // Tastatur schließen, indem der Fokus vom aktuellen Element entfernt wird
+                    document.activeElement.blur();
+                } else {
+                    // Zum nächsten Feld springen
+                    const nextElement = document.getElementById(nextId);
+                    if (nextElement) {
+                        nextElement.focus();
+                        // Falls es ein Input ist, direkt den Text markieren
+                        if (nextElement.tagName === 'INPUT' && nextElement.type !== 'text') {
+                            nextElement.select();
+                        }
                     }
                 }
             }
