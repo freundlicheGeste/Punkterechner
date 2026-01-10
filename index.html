@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punkte Rechner Gold</title>
+    <title>Punkte Rechner</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -12,6 +13,7 @@
             --input-border: #cccccc;
             --result-bg: #fff5e6;
             --accent-color: #ff8c00;
+            --focus-color: #ff4d01;
         }
 
         [data-theme="dark"] {
@@ -21,161 +23,313 @@
             --input-border: #444444;
             --result-bg: #2d1f10;
             --accent-color: #ffa500;
+            --focus-color: #ff4d01;
         }
 
-        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
-        .container { background: var(--container-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-width: 400px; width: 100%; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .top-btns { display: flex; gap: 5px; }
-        .small-btn { cursor: pointer; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--result-bg); color: var(--text-color); font-size: 0.8em; }
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
 
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85em; }
-        
+        .container {
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .small-btn {
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--input-border);
+            background: var(--result-bg);
+            color: var(--text-color);
+            font-size: 0.8em;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
         /* Input Styling */
-        .input-group input { 
-            width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; 
-            box-sizing: border-box; font-size: 16px; background: var(--container-bg); color: var(--text-color);
-            outline: none; transition: border 0.2s;
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: border 0.2s;
         }
-        
+
         /* Fokus-Effekt (Orange statt Blau) */
-        .input-group input:focus { border: 2px solid var(--accent-color); background-color: var(--result-bg); }
+        .input-group input:focus {
+            border: 2px solid var(--accent-color);
+            background-color: var(--result-bg);
+        }
 
         /* Entfernen der Hoch/Runter Pfeile */
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-        .portion-group input { border: 2px solid var(--accent-color); font-weight: bold; }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
 
-        .result-area { margin-top: 20px; padding: 15px; background-color: var(--result-bg); border-radius: 8px; text-align: center; border: 1px solid var(--accent-color); }
-        .res-big { font-size: 2.2em; font-weight: bold; color: var(--accent-color); display: block; }
-        .res-small { font-size: 1.1em; font-weight: bold; color: var(--text-color); display: block; margin-top: 10px; }
-        .unit { font-size: 0.5em; font-weight: normal; margin-left: 5px; color: var(--text-color); }
+        .portion-group input {
+            border: 2px solid var(--accent-color);
+            font-weight: bold;
+        }
 
-        .btn-save { width: 100%; margin-top: 15px; padding: 12px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        
-        .list-container { margin-top: 25px; width: 100%; max-width: 400px; }
-        .fav-item { background: var(--container-bg); margin-bottom: 8px; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .delete-btn { background: #ff4444; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--result-bg);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--accent-color);
+        }
+
+        .res-big {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--accent-color);
+            display: block;
+        }
+
+        .res-small {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-color);
+            display: block;
+            margin-top: 10px;
+        }
+
+        .unit {
+            font-size: 0.5em;
+            font-weight: normal;
+            margin-left: 5px;
+            color: var(--text-color);
+        }
+
+        .btn-save {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:focus {
+            outline: none;
+            border: 1px solid var(--focus-color);
+        }
+
+        .btn-save:focus {
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        .list-container {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .fav-item {
+            background: var(--container-bg);
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <h2>Punkte-Rechner</h2>
-        <div class="top-btns">
-            <button class="small-btn" onclick="exportFavs()" title="Export">📤</button>
-            <button class="small-btn" onclick="importFavs()" title="Import">📥</button>
-            <button class="small-btn" onclick="toggleTheme()">🌓</button>
+    <div class="container">
+        <div class="header">
+            <h2>Punkte Rechner</h2>
+            <div class="top-btns">
+                <button class="small-btn" onclick="exportFavs()" title="Export">📤</button>
+                <button class="small-btn" onclick="importFavs()" title="Import">📥</button>
+                <button class="small-btn" onclick="toggleTheme()">🌓</button>
+            </div>
         </div>
+
+        <div class="input-group">
+            <label>Name:</label>
+            <input type="text" id="name" placeholder="z.B. Käsebrot" enterkeyhint="next"
+                onkeydown="tabOnEnter(event, 'kcal')">
+        </div>
+
+        <div class="input-group">
+            <label>Kalorien (kcal):</label>
+            <input type="number" id="kcal" value="0" oninput="berechnen()" onclick="this.select()" enterkeyhint="next"
+                onkeydown="tabOnEnter(event, 'fett')">
+        </div>
+
+        <div class="input-group">
+            <label>Fett (g):</label>
+            <input type="number" id="fett" value="0" oninput="berechnen()" onclick="this.select()" enterkeyhint="next"
+                onkeydown="tabOnEnter(event, 'gramm')">
+        </div>
+
+        <div class="input-group portion-group">
+            <label>Portionsgröße (g):</label>
+            <input type="number" id="gramm" value="100" oninput="berechnen()" onclick="this.select()"
+                enterkeyhint="done" onkeydown="tabOnEnter(event, 'btn-save')">
+        </div>
+
+        <div class="result-area">
+            <span id="resPortion" class="res-big">1,4 <span class="unit">Punkte / Portion</span></span>
+            <span id="res100" class="res-small">0,94 <span class="unit">Punkte / 100g</span></span>
+        </div>
+
+        <button class="btn-save" onclick="saveFavorite()">Als Favorit speichern</button>
     </div>
 
-    <div class="input-group">
-        <label>Name:</label>
-        <input type="text" id="name" placeholder="z.B. Käsebrot" enterkeyhint="next">
-    </div>
+    <div class="list-container" id="favList"></div>
 
-    <div class="input-group">
-        <label>Kalorien (kcal):</label>
-        <input type="number" id="kcal" value="0" oninput="berechnen()" onclick="this.select()" enterkeyhint="next" step="0.1">
-    </div>
+    <script>
+        // Theme & Initialisierung
+        function setTheme(t) { localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
+        function toggleTheme() { localStorage.getItem('theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
+        if (localStorage.getItem('theme') === 'dark') setTheme('dark');
 
-    <div class="input-group">
-        <label>Fett (g):</label>
-        <input type="number" id="fett" value="0" oninput="berechnen()" onclick="this.select()" enterkeyhint="next" step="0.1">
-    </div>
+        function berechnen() {
+            const kcal = parseFloat(document.getElementById('kcal').value) || 0;
+            const fett = parseFloat(document.getElementById('fett').value) || 0;
+            const gramm = parseFloat(document.getElementById('gramm').value) || 0;
+            const p100 = (kcal / 60) + (fett / 9);
+            const pPortion = (p100 * gramm) / 100;
+            document.getElementById('res100').innerHTML = p100.toFixed(2).replace('.', ',') + ' <span class="unit">Punkte / 100g</span>';
+            document.getElementById('resPortion').innerHTML = pPortion.toFixed(1).replace('.', ',') + ' <span class="unit">Punkte / Portion</span>';
+        }
 
-    <div class="input-group portion-group">
-        <label>Portionsgröße (g):</label>
-        <input type="number" id="gramm" value="100" oninput="berechnen()" onclick="this.select()" enterkeyhint="done" step="1">
-    </div>
+        // ENTER: Springe zum nächsten Feld
+        function tabOnEnter(event, nextId) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Verhindert das Neuladen der Seite
+                const nextElement = document.getElementById(nextId);
+                if (nextElement) {
+                    nextElement.focus();
+                    // Falls es ein Input ist, direkt den Text markieren
+                    if (nextElement.tagName === 'INPUT' && nextElement.type !== 'text') {
+                        nextElement.select();
+                    }
+                }
+            }
+        }
 
-    <div class="result-area">
-        <span id="resPortion" class="res-big">1,4 <span class="unit">Punkte / Portion</span></span>
-        <span id="res100" class="res-small">0,94 <span class="unit">Punkte / 100g</span></span>
-    </div>
+        // Favoriten
+        function saveFavorite() {
+            const name = document.getElementById('name').value || "Unbenannt";
+            const pPortion = document.getElementById('resPortion').innerText.split(' ')[0];
+            const p100 = document.getElementById('res100').innerText.split(' ')[0];
+            let favs = JSON.parse(localStorage.getItem('favs')) || [];
+            favs.push({ id: Date.now(), name, pPortion, p100 });
+            localStorage.setItem('favs', JSON.stringify(favs));
+            renderFavs();
+            document.getElementById('name').value = '';
+        }
 
-    <button class="btn-save" onclick="saveFavorite()">Als Favorit speichern</button>
-</div>
+        function deleteFav(id) {
+            let favs = JSON.parse(localStorage.getItem('favs')).filter(f => f.id !== id);
+            localStorage.setItem('favs', JSON.stringify(favs));
+            renderFavs();
+        }
 
-<div class="list-container" id="favList"></div>
-
-<script>
-    // Theme & Initialisierung
-    function setTheme(t) { localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
-    function toggleTheme() { localStorage.getItem('theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
-    if (localStorage.getItem('theme') === 'dark') setTheme('dark');
-
-    function berechnen() {
-        const kcal = parseFloat(document.getElementById('kcal').value) || 0;
-        const fett = parseFloat(document.getElementById('fett').value) || 0;
-        const gramm = parseFloat(document.getElementById('gramm').value) || 0;
-        const p100 = (kcal / 60) + (fett / 9);
-        const pPortion = (p100 * gramm) / 100;
-        document.getElementById('res100').innerHTML = p100.toFixed(2).replace('.', ',') + ' <span class="unit">Punkte / 100g</span>';
-        document.getElementById('resPortion').innerHTML = pPortion.toFixed(1).replace('.', ',') + ' <span class="unit">Punkte / Portion</span>';
-    }
-
-    // Favoriten
-    function saveFavorite() {
-        const name = document.getElementById('name').value || "Unbenannt";
-        const pPortion = document.getElementById('resPortion').innerText.split(' ')[0];
-        const p100 = document.getElementById('res100').innerText.split(' ')[0];
-        let favs = JSON.parse(localStorage.getItem('favs')) || [];
-        favs.push({ id: Date.now(), name, pPortion, p100 });
-        localStorage.setItem('favs', JSON.stringify(favs));
-        renderFavs();
-        document.getElementById('name').value = '';
-    }
-
-    function deleteFav(id) {
-        let favs = JSON.parse(localStorage.getItem('favs')).filter(f => f.id !== id);
-        localStorage.setItem('favs', JSON.stringify(favs));
-        renderFavs();
-    }
-
-    function renderFavs() {
-        const list = document.getElementById('favList');
-        const favs = JSON.parse(localStorage.getItem('favs')) || [];
-        list.innerHTML = favs.length > 0 ? '<h3>Deine Favoriten</h3>' : '';
-        favs.forEach(f => {
-            list.innerHTML += `<div class="fav-item"><div><strong>${f.name}</strong><br><small>${f.pPortion} Pkt. (${f.p100} / 100g)</small></div>
+        function renderFavs() {
+            const list = document.getElementById('favList');
+            const favs = JSON.parse(localStorage.getItem('favs')) || [];
+            list.innerHTML = favs.length > 0 ? '<h3>Deine Favoriten</h3>' : '';
+            favs.forEach(f => {
+                list.innerHTML += `<div class="fav-item"><div><strong>${f.name}</strong><br><small>${f.pPortion} Pkt. (${f.p100} / 100g)</small></div>
             <button class="delete-btn" onclick="deleteFav(${f.id})">Löschen</button></div>`;
-        });
-    }
+            });
+        }
 
-    // Export / Import
-    function exportFavs() {
-        const data = localStorage.getItem('favs');
-        if (!data || data === "[]") return alert("Keine Favoriten vorhanden.");
-        const blob = new Blob([data], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "punkterechner_favoriten.json";
-        a.click();
-    }
+        // Export / Import
+        function exportFavs() {
+            const data = localStorage.getItem('favs');
+            if (!data || data === "[]") return alert("Keine Favoriten vorhanden.");
+            const blob = new Blob([data], { type: "application/json" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "punkterechner_favoriten.json";
+            a.click();
+        }
 
-    function importFavs() {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".json";
-        input.onchange = e => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = event => {
-                localStorage.setItem('favs', event.target.result);
-                renderFavs();
+        function importFavs() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = event => {
+                    localStorage.setItem('favs', event.target.result);
+                    renderFavs();
+                };
+                reader.readAsText(file);
             };
-            reader.readAsText(file);
-        };
-        input.click();
-    }
+            input.click();
+        }
 
-    renderFavs();
-    berechnen();
-</script>
+        renderFavs();
+        berechnen();
+    </script>
 </body>
+
 </html>
