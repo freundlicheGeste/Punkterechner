@@ -209,11 +209,16 @@
         <div class="header">
             <h2>Punkterechner</h2>
             <div class="top-btns">
-                <button class="small-btn" onclick="exportFavs()" title="Export">📤</button>
-                <button class="small-btn" onclick="importFavs()" title="Import">📥</button>
-                <button class="small-btn" onclick="toggleTheme()">🌓</button>
+                    <div style="display: flex; gap: 5px; margin-right: 15px;">
+                        <button class="small-btn" onclick="exportNotes()" title="Export">📤</button>
+                        <button class="small-btn" onclick="importNotes()" title="Import">📥</button>
+                    </div>
+
+                    <div style="display: flex; gap: 5px;">
+                        <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
         <div class="input-group">
             <label>Name:</label>
