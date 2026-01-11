@@ -2,6 +2,12 @@
 <html lang="de">
 
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ff8c00">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Punkte-Rechner</title>
@@ -30,7 +36,8 @@
             font-family: sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 15px;
+            padding: 15px 5px;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -384,6 +391,9 @@
 
         renderFavs();
         berechnen();
+
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        
         // TODO, bei fav speicherung gespeicherte portionsmenge noch mit speichern
     </script>
 </body>
